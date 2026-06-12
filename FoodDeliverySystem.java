@@ -1,17 +1,24 @@
 import java.util.Scanner;
 
+// Parent Class (Inheritance)
+class Person {
+    String customerName;
+
+    Person(String customerName) {
+        this.customerName = customerName;
+    }
+}
+
 // FoodItem Class
 class FoodItem {
     String itemName;
     double price;
 
-    // Constructor
     FoodItem(String itemName, double price) {
         this.itemName = itemName;
         this.price = price;
     }
 
-    // Getters
     String getItemName() {
         return itemName;
     }
@@ -31,17 +38,20 @@ class Restaurant {
         this.menu = menu;
     }
 
-    // Display Menu
     void displayMenu() {
         System.out.println("\nMenu of " + name);
+
         for (int i = 0; i < menu.length; i++) {
-            System.out.println((i + 1) + ". " + menu[i].getItemName() + " - ₹" + menu[i].getPrice());
+            System.out.println((i + 1) + ". "
+                    + menu[i].getItemName()
+                    + " - ₹" + menu[i].getPrice());
         }
     }
 }
 
-// Order Class
-class Order {
+// Order Class (Inheritance)
+class Order extends Person {
+
     FoodItem[] items = new FoodItem[10];
     int[] quantities = new int[10];
     int count = 0;
@@ -51,42 +61,46 @@ class Order {
     double tax = 0;
     double total = 0;
 
-    // Add item
+    Order(String customerName) {
+        super(customerName);
+    }
+
     void addItem(FoodItem item, int quantity) {
         items[count] = item;
         quantities[count] = quantity;
         count++;
     }
 
-    // Calculate bill
     void calculateTotal() {
+
         subtotal = 0;
 
         for (int i = 0; i < count; i++) {
             subtotal += items[i].getPrice() * quantities[i];
         }
 
-        // Delivery logic
         if (subtotal > 500) {
             deliveryCharge = 0;
         } else {
             deliveryCharge = 50;
         }
 
-        // Tax 5%
         tax = subtotal * 0.05;
-
         total = subtotal + deliveryCharge + tax;
     }
 
-    // Display summary
+    // Polymorphism (Method 1)
     void displayOrder() {
+
         System.out.println("\nOrder Summary:");
         System.out.println("-----------------------");
 
         for (int i = 0; i < count; i++) {
-            System.out.println(items[i].getItemName() + " x" + quantities[i] +
-                    " = ₹" + (items[i].getPrice() * quantities[i]));
+            System.out.println(
+                    items[i].getItemName()
+                            + " x" + quantities[i]
+                            + " = ₹"
+                            + (items[i].getPrice() * quantities[i]));
         }
 
         System.out.println("-----------------------");
@@ -95,14 +109,23 @@ class Order {
         System.out.println("Tax (5%): ₹" + tax);
         System.out.println("Total Amount: ₹" + total);
     }
+
+    // Polymorphism (Method Overloading)
+    void displayOrder(String customerName) {
+
+        System.out.println("\nCustomer Name: " + customerName);
+
+        displayOrder();
+    }
 }
 
 // Main Class
 public class FoodDeliverySystem {
+
     public static void main(String[] args) {
+
         Scanner sc = new Scanner(System.in);
 
-        // Create Menu
         FoodItem[] menu = {
                 new FoodItem("Burger", 100),
                 new FoodItem("Pizza", 300),
@@ -111,24 +134,55 @@ public class FoodDeliverySystem {
         };
 
         Restaurant r = new Restaurant("Food Hub", menu);
-        Order order = new Order();
+
+        System.out.print("Enter Customer Name: ");
+        String customerName = sc.nextLine();
+
+        Order order = new Order(customerName);
 
         r.displayMenu();
 
-        System.out.println("\nEnter number of items you want to order:");
-        int n = sc.nextInt();
+        int n;
+
+        try {
+            System.out.print("\nEnter number of items you want to order: ");
+            n = sc.nextInt();
+        } catch (Exception e) {
+            System.out.println("Invalid Input!");
+            return;
+        }
 
         for (int i = 0; i < n; i++) {
-            System.out.print("Enter item number: ");
-            int choice = sc.nextInt();
 
-            System.out.print("Enter quantity: ");
-            int qty = sc.nextInt();
+            try {
 
-            order.addItem(menu[choice - 1], qty);
+                System.out.print("Enter item number: ");
+                int choice = sc.nextInt();
+
+                if (choice < 1 || choice > menu.length) {
+                    throw new Exception("Invalid Menu Choice!");
+                }
+
+                System.out.print("Enter quantity: ");
+                int qty = sc.nextInt();
+
+                if (qty <= 0) {
+                    throw new Exception("Quantity must be greater than 0!");
+                }
+
+                order.addItem(menu[choice - 1], qty);
+
+            } catch (Exception e) {
+
+                System.out.println(e.getMessage());
+                i--;
+            }
         }
 
         order.calculateTotal();
-        order.displayOrder();
+
+        order.displayOrder(customerName);
+
+        sc.close();
     }
 }
