@@ -1,19 +1,23 @@
 # Online Food Delivery System
 
-This project is a Java-based Online Food Delivery System developed using Object-Oriented Programming concepts.  
-It simulates a basic food ordering system where users can view a menu, select items, and generate a bill with tax and delivery charges.
+This project is a Java-based Online Food Delivery System developed using Object-Oriented Programming concepts.It allows users to browse a restaurant menu, place orders, calculate bills, and generate order summaries.The project demonstrates OOP concepts such a Classes,Objects, Encapsulation, Abstraction, Inheritance, Polymorphism, and Exception Handling.
 
 ---
 
 ## Features
 
-- Display restaurant menu  
-- Select multiple food items  
-- Enter quantity for each item  
-- Calculate subtotal automatically  
-- Apply delivery charges  
-- Calculate tax (GST)  
-- Generate final order summary  
+Features
+
+Display restaurant menu
+Select multiple food items
+Enter quantity for each item
+Calculate subtotal automatically
+Apply delivery charges
+Calculate tax (GST)
+Generate final order summary
+Customer name support
+Exception handling for invalid inputs
+Order history management
 
 ---
 
@@ -28,12 +32,13 @@ It simulates a basic food ordering system where users can view a menu, select it
 
 Online-Food-Delivery-System/
 
-- FoodDeliverySystem.java   (Main class)  
-- FoodItem.java             (Food item details)  
-- Restaurant.java           (Menu handling)  
-- Order.java                (Order and billing logic)  
-- output1.png               (Sample output 1)  
-- output2.png               (Sample output 2)  
+FoodDeliverySystem.java (Main class)
+Person class (Parent class for inheritance)
+FoodItem class (Food item details)
+Restaurant class (Menu handling)
+Order class (Order and billing logic)
+output1.png (Sample output 1)
+output2.png (Sample output 2)
 
 ---
 
@@ -65,12 +70,17 @@ Output 2:
 
 ## Concepts Used
 
-- Classes and Objects  
-- Encapsulation  
-- Arrays  
-- Method design  
-- Modular programming  
-
+Classes and Objects
+Constructors
+Encapsulation
+Abstraction
+Inheritance
+Polymorphism (Method Overloading)
+Exception Handling
+Arrays
+Methods
+Conditional Statements
+Loops
 ---
 
 ## Future Enhancements
