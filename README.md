@@ -60,11 +60,11 @@ output2.png (Sample output 2)
 
 ## Sample Output
 
-Output 1:  
-(See output1.png)
+Output 1: Normal order with billing
 
-Output 2:  
-(See output2.png)
+Output 2: Multiple items order with free delivery
+
+Output 3: Exception handling for invalid input
 
 ---
 
