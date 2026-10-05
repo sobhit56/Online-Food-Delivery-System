@@ -2,17 +2,21 @@ import java.util.Scanner;
 
 // Parent Class (Inheritance)
 class Person {
-    String customerName;
+    private String customerName;
 
     Person(String customerName) {
         this.customerName = customerName;
+    }
+
+    String getCustomerName() {
+        return customerName;
     }
 }
 
 // FoodItem Class
 class FoodItem {
-    String itemName;
-    double price;
+    private String itemName;
+    private double price;
 
     FoodItem(String itemName, double price) {
         this.itemName = itemName;
@@ -30,8 +34,8 @@ class FoodItem {
 
 // Restaurant Class
 class Restaurant {
-    String name;
-    FoodItem[] menu;
+    private String name;
+    private FoodItem[] menu;
 
     Restaurant(String name, FoodItem[] menu) {
         this.name = name;
@@ -42,9 +46,11 @@ class Restaurant {
         System.out.println("\nMenu of " + name);
 
         for (int i = 0; i < menu.length; i++) {
-            System.out.println((i + 1) + ". "
+            System.out.println(
+                    (i + 1) + ". "
                     + menu[i].getItemName()
-                    + " - ₹" + menu[i].getPrice());
+                    + " - Rs." + menu[i].getPrice()
+            );
         }
     }
 }
@@ -52,20 +58,27 @@ class Restaurant {
 // Order Class (Inheritance)
 class Order extends Person {
 
-    FoodItem[] items = new FoodItem[10];
-    int[] quantities = new int[10];
-    int count = 0;
+    private FoodItem[] items = new FoodItem[10];
+    private int[] quantities = new int[10];
+    private int count = 0;
 
-    double subtotal = 0;
-    double deliveryCharge = 0;
-    double tax = 0;
-    double total = 0;
+    private double subtotal = 0;
+    private double deliveryCharge = 0;
+    private double tax = 0;
+    private double total = 0;
 
     Order(String customerName) {
         super(customerName);
     }
 
     void addItem(FoodItem item, int quantity) {
+
+        if (count >= items.length) {
+            throw new IllegalStateException(
+                    "Maximum number of items reached."
+            );
+        }
+
         items[count] = item;
         quantities[count] = quantity;
         count++;
@@ -79,17 +92,20 @@ class Order extends Person {
             subtotal += items[i].getPrice() * quantities[i];
         }
 
+        // Free delivery for orders above Rs.500
         if (subtotal > 500) {
             deliveryCharge = 0;
         } else {
             deliveryCharge = 50;
         }
 
+        // GST 5%
         tax = subtotal * 0.05;
+
         total = subtotal + deliveryCharge + tax;
     }
 
-    // Polymorphism (Method 1)
+    // Polymorphism - Method 1
     void displayOrder() {
 
         System.out.println("\nOrder Summary:");
@@ -98,19 +114,21 @@ class Order extends Person {
         for (int i = 0; i < count; i++) {
             System.out.println(
                     items[i].getItemName()
-                            + " x" + quantities[i]
-                            + " = ₹"
-                            + (items[i].getPrice() * quantities[i]));
+                    + " x" + quantities[i]
+                    + " = Rs."
+                    + (items[i].getPrice() * quantities[i])
+            );
         }
 
         System.out.println("-----------------------");
-        System.out.println("Subtotal: ₹" + subtotal);
-        System.out.println("Delivery Charge: ₹" + deliveryCharge);
-        System.out.println("Tax (5%): ₹" + tax);
-        System.out.println("Total Amount: ₹" + total);
+        System.out.println("Customer Name: " + getCustomerName());
+        System.out.println("Subtotal: Rs." + subtotal);
+        System.out.println("Delivery Charge: Rs." + deliveryCharge);
+        System.out.println("Tax (5%): Rs." + tax);
+        System.out.println("Total Amount: Rs." + total);
     }
 
-    // Polymorphism (Method Overloading)
+    // Polymorphism - Method Overloading
     void displayOrder(String customerName) {
 
         System.out.println("\nCustomer Name: " + customerName);
@@ -126,6 +144,7 @@ public class FoodDeliverySystem {
 
         Scanner sc = new Scanner(System.in);
 
+        // Create Menu
         FoodItem[] menu = {
                 new FoodItem("Burger", 100),
                 new FoodItem("Pizza", 300),
@@ -133,55 +152,114 @@ public class FoodDeliverySystem {
                 new FoodItem("Cold Drink", 50)
         };
 
-        Restaurant r = new Restaurant("Food Hub", menu);
+        Restaurant restaurant =
+                new Restaurant("Food Hub", menu);
 
+        // Customer Name
         System.out.print("Enter Customer Name: ");
-        String customerName = sc.nextLine();
+        String customerName = sc.nextLine().trim();
 
-        Order order = new Order(customerName);
-
-        r.displayMenu();
-
-        int n;
-
-        try {
-            System.out.print("\nEnter number of items you want to order: ");
-            n = sc.nextInt();
-        } catch (Exception e) {
-            System.out.println("Invalid Input!");
+        if (customerName.isEmpty()) {
+            System.out.println("Customer name cannot be empty.");
+            sc.close();
             return;
         }
 
-        for (int i = 0; i < n; i++) {
+        // Create Order
+        Order order = new Order(customerName);
+
+        // Display Menu
+        restaurant.displayMenu();
+
+        int numberOfItems;
+
+        // Get number of items
+        while (true) {
 
             try {
+                System.out.print(
+                        "\nEnter number of items you want to order: "
+                );
 
-                System.out.print("Enter item number: ");
-                int choice = sc.nextInt();
+                numberOfItems = sc.nextInt();
 
-                if (choice < 1 || choice > menu.length) {
-                    throw new Exception("Invalid Menu Choice!");
+                if (numberOfItems <= 0) {
+                    System.out.println(
+                            "Number of items must be greater than 0."
+                    );
+                    continue;
                 }
 
-                System.out.print("Enter quantity: ");
-                int qty = sc.nextInt();
-
-                if (qty <= 0) {
-                    throw new Exception("Quantity must be greater than 0!");
+                if (numberOfItems > 10) {
+                    System.out.println(
+                            "You can order a maximum of 10 items."
+                    );
+                    continue;
                 }
 
-                order.addItem(menu[choice - 1], qty);
+                break;
 
             } catch (Exception e) {
 
-                System.out.println(e.getMessage());
-                i--;
+                System.out.println(
+                        "Invalid input! Please enter a number."
+                );
+
+                sc.nextLine();
             }
         }
 
+        // Select Items
+        for (int i = 0; i < numberOfItems; i++) {
+
+            while (true) {
+
+                try {
+
+                    System.out.print("Enter item number: ");
+                    int choice = sc.nextInt();
+
+                    if (choice < 1 || choice > menu.length) {
+                        System.out.println(
+                                "Invalid menu choice! "
+                                + "Please select a valid item."
+                        );
+                        continue;
+                    }
+
+                    System.out.print("Enter quantity: ");
+                    int quantity = sc.nextInt();
+
+                    if (quantity <= 0) {
+                        System.out.println(
+                                "Quantity must be greater than 0."
+                        );
+                        continue;
+                    }
+
+                    order.addItem(
+                            menu[choice - 1],
+                            quantity
+                    );
+
+                    break;
+
+                } catch (Exception e) {
+
+                    System.out.println(
+                            "Invalid input! Please enter numbers only."
+                    );
+
+                    sc.nextLine();
+                }
+            }
+        }
+
+        // Calculate Bill
         order.calculateTotal();
 
-        order.displayOrder(customerName);
+        // Display Order
+        order.displayOrder();
 
         sc.close();
     }
