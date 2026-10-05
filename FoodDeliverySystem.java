@@ -103,7 +103,9 @@ class Order extends Person {
         tax = subtotal * 0.05;
 
         total = subtotal + deliveryCharge + tax;
-    }
+
+        }
+        
 
     // Polymorphism - Method 1
     void displayOrder() {
@@ -135,6 +137,51 @@ class Order extends Person {
 
         displayOrder();
     }
+
+    String generateOrderDetails() {
+
+    StringBuilder details = new StringBuilder();
+
+    details.append("================================\n");
+    details.append("Customer Name: ")
+           .append(getCustomerName())
+           .append("\n");
+
+    details.append("Order Details:\n");
+
+    for (int i = 0; i < count; i++) {
+
+        details.append(
+                items[i].getItemName()
+                + " x" + quantities[i]
+                + " = Rs."
+                + (items[i].getPrice() * quantities[i])
+                + "\n"
+        );
+    }
+
+    details.append("--------------------------------\n");
+
+    details.append("Subtotal: Rs.")
+           .append(subtotal)
+           .append("\n");
+
+    details.append("Delivery Charge: Rs.")
+           .append(deliveryCharge)
+           .append("\n");
+
+    details.append("Tax (5%): Rs.")
+           .append(tax)
+           .append("\n");
+
+    details.append("Total Amount: Rs.")
+           .append(total)
+           .append("\n");
+
+    details.append("================================");
+
+    return details.toString();
+}
 }
 
 // Main Class
@@ -256,11 +303,26 @@ public class FoodDeliverySystem {
         }
 
         // Calculate Bill
-        order.calculateTotal();
+       order.calculateTotal();
 
-        // Display Order
-        order.displayOrder();
+      order.displayOrder(customerName);
 
-        sc.close();
+    // Save order to file
+    OrderFileManager.saveOrder(order.generateOrderDetails());
+
+    // View previous orders
+    System.out.print(
+        "\nDo you want to view previous orders? (yes/no): "
+);
+
+String answer = sc.next();
+
+if (answer.equalsIgnoreCase("yes")) {
+    OrderFileManager.viewOrders();
+}
+
+
+    sc.close();
+
     }
 }
